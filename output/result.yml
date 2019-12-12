@@ -1,0 +1,962 @@
+diego-release:
+  route_emitter:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: nats-tls
+      type: nats-tls
+      optional: true
+    - name: routing_api
+      type: routing_api
+      optional: true
+diego-release:
+  route_emitter_windows:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: nats-tls
+      type: nats-tls
+      optional: true
+    - name: routing_api
+      type: routing_api
+      optional: true
+diego-release:
+  file_server:
+    provides:
+    - name: file_server
+      type: file_server
+      properties:
+      - https_server_enabled
+      - https_url
+diego-release:
+  ssh_proxy:
+    consumes:
+    - name: cloud_controller_https_endpoint
+      type: cloud_controller_https_endpoint
+      optional: true
+diego-release:
+  ssh_proxy:
+    provides:
+    - name: ssh_proxy
+      type: ssh_proxy
+log-cache-release:
+  log-cache-nozzle:
+    consumes:
+    - name: reverse_log_proxy
+      type: reverse_log_proxy
+    - name: log-cache
+      type: log-cache
+log-cache-release:
+  log-cache-nozzle:
+    provides:
+    - name: log-cache-nozzle
+      type: log-cache-nozzle
+log-cache-release:
+  log-cache-cf-auth-proxy:
+    consumes:
+    - name: log-cache
+      type: log-cache
+    - name: log-cache-gateway
+      type: log-cache-gateway
+    - name: cloud_controller
+      type: cloud_controller
+log-cache-release:
+  log-cache-cf-auth-proxy:
+    provides:
+    - name: log-cache-cf-auth-proxy
+      type: log-cache-cf-auth-proxy
+      properties:
+      - proxy_port
+log-cache-release:
+  log-cache:
+    consumes:
+    - name: log-cache
+      type: log-cache
+log-cache-release:
+  log-cache:
+    provides:
+    - name: log-cache
+      type: log-cache
+      properties:
+      - port
+      - tls
+      - disabled
+log-cache-release:
+  log-cache-blackbox:
+    consumes:
+    - name: log-cache
+      type: log-cache
+    - name: cloud_controller
+      type: cloud_controller
+      optional: true
+log-cache-release:
+  log-cache-syslog-server:
+    consumes:
+    - name: log-cache
+      type: log-cache
+log-cache-release:
+  log-cache-gateway:
+    consumes:
+    - name: log-cache
+      type: log-cache
+log-cache-release:
+  log-cache-gateway:
+    provides:
+    - name: log-cache-gateway
+      type: log-cache-gateway
+      properties:
+      - gateway_addr
+loggregator-release:
+  doppler:
+    provides:
+    - name: doppler
+      type: doppler
+      properties:
+      - doppler.grpc_port
+    - name: loggregator
+      type: loggregator
+      properties:
+      - loggregator.tls.ca_cert
+      - loggregator.tls.doppler.cert
+      - loggregator.tls.doppler.key
+      - metron_endpoint.grpc_port
+loggregator-release:
+  reverse_log_proxy_gateway:
+    consumes:
+    - name: reverse_log_proxy
+      type: reverse_log_proxy
+    - name: cloud_controller
+      type: cloud_controller
+loggregator-release:
+  reverse_log_proxy_gateway:
+    provides:
+    - name: log_gateway
+      type: log_gateway
+      properties:
+      - http.address
+loggregator-release:
+  reverse_log_proxy:
+    consumes:
+    - name: doppler
+      type: doppler
+      optional: true
+loggregator-release:
+  reverse_log_proxy:
+    provides:
+    - name: reverse_log_proxy
+      type: reverse_log_proxy
+      properties:
+      - reverse_log_proxy.egress.port
+loggregator-release:
+  loggregator_trafficcontroller:
+    consumes:
+    - name: doppler
+      type: doppler
+      optional: true
+    - name: log-cache
+      type: log-cache
+      optional: true
+loggregator-release:
+  loggregator_trafficcontroller:
+    provides:
+    - name: trafficcontroller
+      type: trafficcontroller
+      properties:
+      - loggregator.outgoing_dropsonde_port
+credhub-release:
+  credhub:
+    consumes:
+    - name: postgres
+      type: database
+      optional: true
+credhub-release:
+  credhub:
+    provides:
+    - name: credhub
+      type: credhub
+      properties:
+      - credhub.port
+      - credhub.ca_certificate
+      - credhub.internal_url
+    - name: credhub_db
+      type: credhub_db
+      properties:
+      - credhub.data_storage.database
+      - credhub.data_storage.host
+      - credhub.data_storage.hostname_verification.enabled
+      - credhub.data_storage.password
+      - credhub.data_storage.port
+      - credhub.data_storage.require_tls
+      - credhub.data_storage.tls_ca
+      - credhub.data_storage.type
+      - credhub.data_storage.username
+credhub-release:
+  bbr-credhubdb:
+    consumes:
+    - name: credhub_db
+      type: credhub_db
+    - name: database
+      type: database
+      optional: true
+routing-release:
+  route_registrar:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: routing_api
+      type: routing_api
+      optional: true
+routing-release:
+  tcp_router:
+    consumes:
+    - name: routing_api
+      type: routing_api
+      optional: true
+routing-release:
+  tcp_router:
+    provides:
+    - name: tcp_router
+      type: tcp-router
+routing-release:
+  gorouter:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: routing_api
+      type: routing_api
+      optional: true
+routing-release:
+  gorouter:
+    provides:
+    - name: gorouter
+      type: http-router
+routing-release:
+  routing-api:
+    provides:
+    - name: routing_api
+      type: routing_api
+      properties:
+      - routing_api.clients
+      - routing_api.system_domain
+      - routing_api.port
+      - routing_api.mtls_port
+      - routing_api.mtls_ca
+      - routing_api.mtls_server_cert
+      - routing_api.mtls_server_key
+      - routing_api.mtls_client_cert
+      - routing_api.mtls_client_key
+      - routing_api.enabled_api_endpoints
+      - uaa.ca_cert
+      - skip_ssl_validation
+    - name: routing_api_db
+      type: routing_api_db
+      properties:
+      - routing_api.sqldb
+      - release_level_backup
+routing-release:
+  bbr-routingdb:
+    consumes:
+    - name: routing_api_db
+      type: routing_api_db
+uaa-release:
+  uaa:
+    consumes:
+    - name: router
+      type: http-router
+      optional: true
+    - name: database
+      type: database
+      optional: true
+uaa-release:
+  uaa:
+    provides:
+    - name: uaa_db
+      type: uaa_db
+      properties:
+      - uaadb
+    - name: uaa_keys
+      type: uaa_keys
+      properties:
+      - encryption.active_key_label
+      - encryption.encryption_keys
+uaa-release:
+  bbr-uaadb:
+    consumes:
+    - name: uaa_db
+      type: uaa_db
+    - name: database
+      type: database
+      optional: true
+loggregator-agent-release:
+  prom_scraper:
+    consumes:
+    - name: loggregator
+      type: loggregator
+      optional: true
+loggregator-agent-release:
+  loggregator_agent:
+    consumes:
+    - name: doppler
+      type: doppler
+loggregator-agent-release:
+  loggregator_agent:
+    provides:
+    - name: loggregator_agent
+      type: loggregator_agent
+      properties:
+      - listening_port
+      - grpc_port
+loggregator-agent-release:
+  loggr-syslog-agent:
+    consumes:
+    - name: binding_cache
+      type: binding_cache
+loggregator-agent-release:
+  loggr-udp-forwarder:
+    consumes:
+    - name: cloud_controller
+      type: cloud_controller
+loggregator-agent-release:
+  loggr-syslog-binding-cache:
+    consumes:
+    - name: cloud_controller
+      type: cloud_controller
+loggregator-agent-release:
+  loggr-syslog-binding-cache:
+    provides:
+    - name: binding_cache
+      type: binding_cache
+      properties:
+      - external_port
+loggregator-agent-release:
+  loggr-syslog-agent-windows:
+    consumes:
+    - name: binding_cache
+      type: binding_cache
+loggregator-agent-release:
+  loggregator_agent_windows:
+    consumes:
+    - name: doppler
+      type: doppler
+loggregator-agent-release:
+  loggregator_agent_windows:
+    provides:
+    - name: loggregator_agent_windows
+      type: loggregator_agent
+      properties:
+      - listening_port
+      - grpc_port
+loggregator-agent-release:
+  prom_scraper_windows:
+    consumes:
+    - name: loggregator
+      type: loggregator
+      optional: true
+cf-networking-release:
+  bbr-cfnetworkingdb:
+    consumes:
+    - name: cfnetworkingdbconn
+      type: dbconn
+cf-networking-release:
+  service-discovery-controller:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+cf-networking-release:
+  service-discovery-controller:
+    provides:
+    - name: service-discovery-controller
+      type: service-discovery-controller
+      properties:
+      - address
+      - port
+cf-networking-release:
+  garden-cni:
+    consumes:
+    - name: cloud_controller_container_networking_info
+      type: cloud_controller_container_networking_info
+cf-networking-release:
+  policy-server:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: cloud_controller_https_endpoint
+      type: cloud_controller_https_endpoint
+      optional: true
+cf-networking-release:
+  policy-server:
+    provides:
+    - name: dbconn
+      type: dbconn
+      properties:
+      - database.type
+      - database.username
+      - database.password
+      - database.port
+      - database.name
+      - database.host
+      - database.require_ssl
+      - database.ca_cert
+      - database.skip_hostname_validation
+    - name: tag_length
+      type: tag_length
+      properties:
+      - tag_length
+cf-networking-release:
+  performance-test-sd:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+cf-networking-release:
+  bosh-dns-adapter:
+    consumes:
+    - name: service-discovery-controller
+      type: service-discovery-controller
+    - name: cloud_controller_container_networking_info
+      type: cloud_controller_container_networking_info
+      optional: true
+    - name: vip_resolver_conn
+      type: vip_resolver_conn
+      optional: true
+cf-networking-release:
+  policy-server-internal:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: dbconn
+      type: dbconn
+    - name: tag_length
+      type: tag_length
+cf-networking-release:
+  iptables-writer:
+    consumes:
+    - name: cf_network
+      type: cf_network
+      optional: true
+silk-release:
+  vxlan-policy-agent:
+    consumes:
+    - name: cf_network
+      type: cf_network
+silk-release:
+  vxlan-policy-agent:
+    provides:
+    - name: vpa
+      type: policy-agent
+      properties:
+      - ca_cert
+      - client_cert
+      - client_key
+      - force_policy_poll_cycle_port
+silk-release:
+  silk-cni:
+    consumes:
+    - name: cf_network
+      type: cf_network
+    - name: vpa
+      type: policy-agent
+silk-release:
+  vxlan-policy-agent-windows:
+    consumes:
+    - name: cf_network
+      type: cf_network
+silk-release:
+  silk-controller:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+silk-release:
+  silk-controller:
+    provides:
+    - name: cf_network
+      type: cf_network
+      properties:
+      - network
+      - subnet_prefix_length
+silk-release:
+  silk-daemon:
+    consumes:
+    - name: cf_network
+      type: cf_network
+    - name: vpa
+      type: policy-agent
+capi-release:
+  cloud_controller_ng:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: cc_uploader
+      type: cc_uploader
+      optional: true
+    - name: credhub
+      type: credhub
+      optional: true
+    - name: cloud_controller_to_copilot_conn
+      type: cloud_controller_to_copilot_conn
+      optional: true
+    - name: log-cache
+      type: log-cache
+      optional: true
+    - name: file_server
+      type: file_server
+      optional: true
+capi-release:
+  cloud_controller_ng:
+    provides:
+    - name: cloud_controller
+      type: cloud_controller
+      properties:
+      - system_domain
+      - app_domains
+    - name: cloud_controller_db
+      type: cloud_controller_db
+      properties:
+      - ccdb
+      - ccdb.connection_validation_timeout
+      - ccdb.max_connections
+      - ccdb.pool_timeout
+      - ccdb.read_timeout
+      - ccdb.ssl_verify_hostname
+      - ccdb.ca_cert
+    - name: directories_to_backup
+      type: directories_to_backup
+      properties:
+      - cc.packages.app_package_directory_key
+      - cc.droplets.droplet_directory_key
+      - cc.buildpacks.buildpack_directory_key
+    - name: cloud_controller_https_endpoint
+      type: cloud_controller_https_endpoint
+      properties:
+      - cc.internal_service_hostname
+      - cc.public_tls.port
+      - cc.public_tls.ca_cert
+    - name: cloud_controller_mtls_endpoint
+      type: cloud_controller_mtls_endpoint
+      properties:
+      - cc.internal_service_hostname
+      - cc.tls_port
+      - cc.mutual_tls.ca_cert
+    - name: cloud_controller_container_networking_info
+      type: cloud_controller_container_networking_info
+      properties:
+      - cc.internal_route_vip_range
+    - name: cloud_controller_internal
+      type: cloud_controller_internal
+      properties:
+      - cc.bits_service.ca_cert
+      - cc.bits_service.enabled
+      - cc.bits_service.password
+      - cc.bits_service.private_endpoint
+      - cc.bits_service.public_endpoint
+      - cc.bits_service.username
+      - cc.buildpacks.blobstore_type
+      - cc.buildpacks.buildpack_directory_key
+      - cc.buildpacks.cdn.key_pair_id
+      - cc.buildpacks.cdn.private_key
+      - cc.buildpacks.cdn.uri
+      - cc.buildpacks.fog_aws_storage_options
+      - cc.buildpacks.fog_connection
+      - cc.buildpacks.webdav_config.blobstore_timeout
+      - cc.buildpacks.webdav_config.ca_cert
+      - cc.buildpacks.webdav_config.password
+      - cc.buildpacks.webdav_config.private_endpoint
+      - cc.buildpacks.webdav_config.public_endpoint
+      - cc.buildpacks.webdav_config.username
+      - cc.credential_references.interpolate_service_bindings
+      - cc.database_encryption.current_key_label
+      - cc.database_encryption.experimental_pbkdf2_hmac_iterations
+      - cc.database_encryption.keys
+      - cc.db_encryption_key
+      - cc.db_logging_level
+      - cc.default_app_ssh_access
+      - cc.default_health_check_timeout
+      - cc.default_stack
+      - cc.disable_private_domain_cross_space_context_path_route_sharing
+      - cc.droplets.blobstore_type
+      - cc.droplets.cdn.key_pair_id
+      - cc.droplets.cdn.private_key
+      - cc.droplets.cdn.uri
+      - cc.droplets.droplet_directory_key
+      - cc.droplets.fog_aws_storage_options
+      - cc.droplets.fog_connection
+      - cc.droplets.webdav_config.blobstore_timeout
+      - cc.droplets.webdav_config.ca_cert
+      - cc.droplets.webdav_config.password
+      - cc.droplets.webdav_config.private_endpoint
+      - cc.droplets.webdav_config.public_endpoint
+      - cc.droplets.webdav_config.username
+      - cc.external_host
+      - cc.external_port
+      - cc.external_protocol
+      - cc.internal_service_hostname
+      - cc.log_db_queries
+      - cc.logging_level
+      - cc.logging_max_retries
+      - cc.max_labels_per_resource
+      - cc.max_annotations_per_resource
+      - cc.maximum_health_check_timeout
+      - cc.opi.ca_cert
+      - cc.opi.client_cert
+      - cc.opi.client_key
+      - cc.opi.enabled
+      - cc.opi.opi_staging
+      - cc.opi.url
+      - cc.packages.app_package_directory_key
+      - cc.packages.blobstore_type
+      - cc.packages.cdn.key_pair_id
+      - cc.packages.cdn.private_key
+      - cc.packages.cdn.uri
+      - cc.packages.fog_aws_storage_options
+      - cc.packages.fog_connection
+      - cc.packages.max_package_size
+      - cc.packages.webdav_config.blobstore_timeout
+      - cc.packages.webdav_config.ca_cert
+      - cc.packages.webdav_config.password
+      - cc.packages.webdav_config.private_endpoint
+      - cc.packages.webdav_config.public_endpoint
+      - cc.packages.webdav_config.username
+      - cc.resource_pool.blobstore_type
+      - cc.resource_pool.cdn.key_pair_id
+      - cc.resource_pool.cdn.private_key
+      - cc.resource_pool.cdn.uri
+      - cc.resource_pool.fog_aws_storage_options
+      - cc.resource_pool.fog_connection
+      - cc.resource_pool.maximum_size
+      - cc.resource_pool.minimum_size
+      - cc.resource_pool.resource_directory_key
+      - cc.resource_pool.webdav_config.blobstore_timeout
+      - cc.resource_pool.webdav_config.ca_cert
+      - cc.resource_pool.webdav_config.password
+      - cc.resource_pool.webdav_config.private_endpoint
+      - cc.resource_pool.webdav_config.public_endpoint
+      - cc.resource_pool.webdav_config.username
+      - cc.stacks
+      - cc.staging_timeout_in_seconds
+      - cc.staging_upload_password
+      - cc.staging_upload_user
+      - cc.statsd_host
+      - cc.statsd_port
+      - cc.system_hostnames
+      - cc.tls_port
+      - cc.uaa.client_timeout
+      - cc.internal_route_vip_range
+      - cc.volume_services_enabled
+      - copilot.client_ca_file
+      - copilot.client_chain_file
+      - copilot.client_key_file
+      - copilot.enabled
+      - copilot.host
+      - copilot.temporary_istio_domains
+      - credhub_api.ca_cert
+      - credhub_api.hostname
+      - release_level_backup
+      - router.route_services_secret
+      - routing_api.enabled
+      - ssl.skip_cert_verify
+      - system_domain
+      - uaa.clients.cc_routing.secret
+capi-release:
+  cc_uploader:
+    provides:
+    - name: cc_uploader
+      type: cc_uploader
+      properties:
+      - internal_hostname
+      - http_port
+      - https_port
+capi-release:
+  bbr-cloudcontrollerdb:
+    consumes:
+    - name: cloud_controller_db
+      type: cloud_controller_db
+    - name: database
+      type: database
+      optional: true
+capi-release:
+  blobstore:
+    consumes:
+    - name: directories_to_backup
+      type: directories_to_backup
+capi-release:
+  cloud_controller_worker:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: credhub
+      type: credhub
+      optional: true
+    - name: cloud_controller_to_copilot_conn
+      type: cloud_controller_to_copilot_conn
+      optional: true
+    - name: cloud_controller_internal
+      type: cloud_controller_internal
+      optional: true
+    - name: file_server
+      type: file_server
+      optional: true
+capi-release:
+  cc_route_syncer:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: cloud_controller_to_copilot_conn
+      type: cloud_controller_to_copilot_conn
+      optional: true
+    - name: cloud_controller_internal
+      type: cloud_controller_internal
+    - name: cloud_controller_container_networking_info
+      type: cloud_controller_container_networking_info
+capi-release:
+  cc_deployment_updater:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: credhub
+      type: credhub
+      optional: true
+    - name: cloud_controller_to_copilot_conn
+      type: cloud_controller_to_copilot_conn
+      optional: true
+    - name: cloud_controller_internal
+      type: cloud_controller_internal
+    - name: file_server
+      type: file_server
+      optional: true
+capi-release:
+  cloud_controller_clock:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: credhub
+      type: credhub
+      optional: true
+    - name: cloud_controller_internal
+      type: cloud_controller_internal
+      optional: true
+    - name: file_server
+      type: file_server
+      optional: true
+capi-release:
+  rotate_cc_database_key:
+    consumes:
+    - name: cloud_controller_db
+      type: cloud_controller_db
+    - name: database
+      type: database
+      optional: true
+    - name: cloud_controller_internal
+      type: cloud_controller_internal
+cf-syslog-drain-release:
+  fake_logs_provider:
+    provides:
+    - name: reverse_log_proxy
+      type: reverse_log_proxy
+      properties:
+      - reverse_log_proxy.egress.port
+cf-syslog-drain-release:
+  fake_cups_provider:
+    consumes:
+    - name: fake_consumer_addrs
+      type: consumer_addr
+cf-syslog-drain-release:
+  fake_cups_provider:
+    provides:
+    - name: cloud_controller
+      type: cloud_controller
+cf-syslog-drain-release:
+  scheduler:
+    consumes:
+    - name: adapter_addrs
+      type: addr
+      optional: true
+    - name: cloud_controller
+      type: cloud_controller
+      optional: true
+cf-syslog-drain-release:
+  adapter:
+    consumes:
+    - name: reverse_log_proxy
+      type: reverse_log_proxy
+      optional: true
+cf-syslog-drain-release:
+  adapter:
+    provides:
+    - name: adapter_addrs
+      type: addr
+      properties:
+      - scalablesyslog.adapter.port
+cf-syslog-drain-release:
+  fake_consumer:
+    provides:
+    - name: fake_consumer_addr
+      type: consumer_addr
+pxc-release:
+  cluster-health-logger:
+    consumes:
+    - name: mysql
+      type: mysql
+pxc-release:
+  bootstrap:
+    consumes:
+    - name: galera-agent
+      type: galera-agent
+pxc-release:
+  proxy:
+    consumes:
+    - name: proxy
+      type: proxy
+      optional: true
+    - name: mysql
+      type: mysql
+      optional: true
+    - name: arbitrator
+      type: arbitrator
+      optional: true
+    - name: galera-agent
+      type: galera-agent
+pxc-release:
+  proxy:
+    provides:
+    - name: proxy
+      type: proxy
+      properties:
+      - api_username
+      - api_password
+      - api_port
+      - api_aggregator_port
+      - port
+    - name: mysql-database
+      type: database
+      properties:
+      - port
+      - type
+pxc-release:
+  smoke-tests-user:
+    consumes:
+    - name: smoke_tests
+      type: smoke_tests
+pxc-release:
+  pxc-mysql:
+    consumes:
+    - name: mysql
+      type: mysql
+    - name: galera-agent
+      type: galera-agent
+      optional: true
+pxc-release:
+  pxc-mysql:
+    provides:
+    - name: mysql
+      type: mysql
+      properties:
+      - port
+      - pxc_enabled
+    - name: internal-mysql-database
+      type: internal-database
+    - name: mysql-backup-user-creds
+      type: mysql-backup-user-creds
+      properties:
+      - mysql_backup_username
+      - mysql_backup_password
+      - mysql_socket
+pxc-release:
+  gra-log-purger:
+    consumes:
+    - name: mysql
+      type: mysql
+pxc-release:
+  galera-agent:
+    consumes:
+    - name: mysql
+      type: mysql
+      optional: true
+pxc-release:
+  galera-agent:
+    provides:
+    - name: galera-agent
+      type: galera-agent
+      properties:
+      - port
+      - endpoint_username
+      - endpoint_password
+pxc-release:
+  smoke-tests:
+    consumes:
+    - name: database
+      type: database
+      optional: true
+    - name: mysql
+      type: mysql
+      optional: true
+pxc-release:
+  smoke-tests:
+    provides:
+    - name: smoke_tests
+      type: smoke_tests
+      properties:
+      - db_username
+      - db_password
+nats-release:
+  smoke-tests:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: nats-tls
+      type: nats-tls
+      optional: true
+nats-release:
+  nats:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: nats-tls
+      type: nats-tls
+      optional: true
+nats-release:
+  nats:
+    provides:
+    - name: nats
+      type: nats
+      properties:
+      - nats.user
+      - nats.password
+      - nats.port
+      - nats.monitor_port
+      - nats.cluster_port
+nats-release:
+  nats-tls:
+    consumes:
+    - name: nats
+      type: nats
+      optional: true
+    - name: nats-tls
+      type: nats-tls
+      optional: true
+nats-release:
+  nats-tls:
+    provides:
+    - name: nats-tls
+      type: nats-tls
+      properties:
+      - nats.user
+      - nats.password
+      - nats.port
+      - nats.monitor_port
+      - nats.cluster_port
+      - nats.external.tls.ca

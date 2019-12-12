@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# set -eux
+
+# find all the release directories
+
+releases=$(find ./src -name "*-release" -type d -depth 1)
+
+# reset the output file
+
+rm output/result.yml
+touch output/result.yml
+
+for release in $releases
+do
+
+    # for each $release, find all directories under "jobs"
+
+    jobs=$(find $release -name "jobs" -type d)
+    for job in $jobs
+    do
+
+        # for each $job, find all the "spec" files
+
+        specs=$(find $job -name "spec")
+        for spec in $specs
+        do
+
+            # when there are links, add them to a list
+
+            consumes=$(yq read $spec consumes)
+            provides=$(yq read $spec provides)
+            
+            # all your base are belong to us
+
+            base_release=$(basename $release)
+            base_spec=$(basename $(dirname $spec))
+            if [ "$consumes" != null ];
+            then
+                yq p <(yq read $spec consumes) $base_release.$base_spec.consumes >> output/result.yml
+            fi
+
+            if [ "$provides" != null ];
+            then
+                true
+                yq p <(yq read $spec provides) $base_release.$base_spec.provides >> output/result.yml
+            fi
+        done
+    done
+done

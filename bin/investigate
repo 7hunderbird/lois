@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# set -eux
+
+deployment='https://github.com/cloudfoundry/cf-deployment.git'
+
+# Remove the .git with // substituion 
+# And obtain the basename of the deployment
+
+base_deployment=$(basename "${deployment//.git}")
+
+# use the src luke!
+
+pushd ./src >> /dev/null
+
+# clone deployment to src
+
+if [ -d $base_deployment ];
+then echo "skipped $base_deployment"
+else
+    git clone $deployment
+fi
+
+pushd $base_deployment >> /dev/null
+
+# generate a deployment manifest
+
+bosh int \
+  cf-deployment.yml \
+  -o operations/bosh-lite.yml \
+  -v system_domain=bosh-lite.com > manifest.yml
+
+# get the list of release URLs from the manifest
+
+urls=$(yq read manifest.yml releases.[*].url | awk '{print $2}')
+
+# go back to the src folder
+
+popd >> /dev/null
+
+for url in $urls
+do
+    # produce a github url from a release url
+    # release url: https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.89.0
+    # github url:  https://github.com/cloudfoundry/capi-release.git
+    
+    remove_prefix="https://bosh.io/d/"
+    remove_suffix="?v="
+    repo=${url#"$remove_prefix"}
+    repo=${repo%"$remove_suffix"*}
+    repo=$(echo "https://${repo}.git")
+    
+    # use bash substituion // to remove trailing .git
+    # use basename to get the base repo name: capi-release
+    
+    base_repo=$(basename "${repo//.git}")
+    if [ -d $base_repo ];
+    then echo "skipped $base_repo"
+    else
+        git clone $repo
+    fi
+done
+
