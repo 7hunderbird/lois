@@ -42,7 +42,7 @@ for url in $urls
 do
     # produce a github url from a release url
     # release url: https://bosh.io/d/github.com/cloudfoundry/capi-release?v=1.89.0
-    # github url:  https://github.com/cloudfoundry/capi-release.git
+    #  github url: https://github.com/cloudfoundry/capi-release.git
     
     remove_prefix="https://bosh.io/d/"
     remove_suffix="?v="
